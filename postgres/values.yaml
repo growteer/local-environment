@@ -1,0 +1,7 @@
+auth:
+  user: user
+  postgresPassword: password
+  password: password
+
+passwordUpdateJob:
+  enabled: true

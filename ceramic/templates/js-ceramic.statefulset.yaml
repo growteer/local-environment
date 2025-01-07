@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: js-ceramic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: js-ceramic
+  serviceName: js-ceramic
+  template:
+    metadata:
+      labels:
+        app: js-ceramic
+    spec:
+      containers:
+        - name: js-ceramic
+          command:
+            - /js-ceramic/packages/cli/bin/ceramic.js
+            - daemon
+            - --config
+            - /config/daemon-config.json
+          envFrom:
+            - configMapRef:
+                name: js-ceramic-env
+          image: "{{ .Values.jsceramic.image.repository }}:{{ .Values.jsceramic.image.tag }}"
+          imagePullPolicy: {{.Values.jsceramic.image.pullPolicy}}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/v0/node/healthcheck
+              port: api
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 30
+          ports:
+            - containerPort: 7007
+              name: api
+              protocol: TCP
+            - containerPort: 9464
+              name: metrics
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/v0/node/healthcheck
+              port: api
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 30
+          resources:
+            limits:
+              ephemeral-storage: 3Gi
+            requests:
+              ephemeral-storage: 3Gi
+          volumeMounts:
+            - mountPath: /config
+              name: config-volume
+            - mountPath: /js-ceramic-data
+              name: js-ceramic-data
+      securityContext:
+        fsGroup: 70
+      volumes:
+        - name: config-volume
+          configMap:
+            name: js-ceramic-config
+            items:
+              - key: daemon-config.json
+                path: daemon-config.json
+        - name: js-ceramic-data
+          persistentVolumeClaim:
+            claimName: js-ceramic-data
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: js-ceramic-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem

@@ -1,0 +1,49 @@
+version: "3"
+
+vars:
+  K8S_VERSION: v1.30.5
+  INFRA_NAMESPACE: infra
+
+tasks:
+  boot:
+    cmds:
+      - minikube start --kubernetes-version {{.K8S_VERSION}}
+      - kubectx minikube
+
+  init:
+    cmds:
+      - helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+      - kubectl apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/v4.0.0/deploy/crds.yaml
+      - cmd: |
+          helm upgrade --install ingress-nginx \
+            -n {{.INFRA_NAMESPACE}} --create-namespace \
+            oci://ghcr.io/nginxinc/charts/nginx-ingress --version 2.0.0
+      - cmd: |
+          helm upgrade --install kubernetes-dashboard \
+            -n {{.INFRA_NAMESPACE}} --create-namespace \
+            kubernetes-dashboard/kubernetes-dashboard
+
+  expose:
+    cmds:
+      - minikube tunnel
+
+  postgres:
+    cmds:
+      - cmd: |
+          helm upgrade --install postgres \
+            -n {{.INFRA_NAMESPACE}} --create-namespace \
+            -f ./postgres/values.yaml \
+            oci://registry-1.docker.io/bitnamicharts/postgresql
+
+  fw-postgres:
+    cmds:
+      - kubectl port-forward -n {{.INFRA_NAMESPACE}} svc/postgres-postgresql 5432:5432
+
+  ceramic:
+    cmd: |
+      helm upgrade --install ceramic \
+        -n {{.INFRA_NAMESPACE}} --create-namespace \
+        ./ceramic
+
+  un-ceramic:
+    cmd: helm uninstall -n {{.INFRA_NAMESPACE}} ceramic

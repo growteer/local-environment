@@ -1,0 +1,68 @@
+replicaCount: 1
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+
+jsceramic:
+  image:
+    repository: ceramicnetwork/js-ceramic
+    pullPolicy: Always
+    tag: "latest"
+
+  ipfsHost: http://ceramic-one:5101
+  disableComposeDB: true
+
+  metrics:
+    exporterEnabled: false
+    prometheusExporterEnabled: true
+    prometheusExporterPort: 9464
+
+  reconMode: "true"
+  network: testnet-clay
+  ethRpcUrl: ""
+  stateStorePath: "/js-ceramic-data/statestore"
+  corsAllowedOrigins: ".*"
+  logLevel: 2
+
+ceramicone:
+  image:
+    repository: public.ecr.aws/r5b3e0r5/3box/ceramic-one
+    pullPolicy: Always
+    tag: "0.47.0"
+
+  bindAddress: 0.0.0.0:5101
+  kademliaParallelism: 1
+  kademliaReplication: 6
+  localNetworkId: 0
+  metricsBindAddress: 0.0.0.0:9465
+  network: testnet-clay
+  recon: "true"
+  storeDir: /root/.ceramic-one
+  swarmAddresses: /ip4/0.0.0.0/tcp/4001
+  rustLog: info,ceramic_one=debug,multipart=error
+
+composedbcli:
+  image:
+    repository: ceramicnetwork/composedb-cli
+    pullPolicy: Always
+    tag: "latest"
