@@ -4,7 +4,7 @@ metadata:
   name: ceramic-one-env
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
-    "helm.sh/hook-weight": "005"
+    "helm.sh/hook-weight": "001"
     "helm.sh/hook-delete-policy": before-hook-creation
 data:
   CERAMIC_ONE_BIND_ADDRESS: {{.Values.ceramicone.bindAddress | quote}}
@@ -15,7 +15,7 @@ data:
   CERAMIC_ONE_LOCAL_NETWORK_ID: {{.Values.ceramicone.localNetworkId | quote}}
   CERAMIC_ONE_METRICS_BIND_ADDRESS:
     {{.Values.ceramicone.metricsBindAddress | quote}}
-  CERAMIC_ONE_NETWORK: {{.Values.ceramicone.network | quote}}
+  CERAMIC_ONE_NETWORK: {{.Values.ceramicNetwork | quote}}
   CERAMIC_ONE_RECON: {{.Values.ceramicone.recon | quote}}
   CERAMIC_ONE_STORE_DIR: {{.Values.ceramicone.storeDir | quote}}
   CERAMIC_ONE_SWARM_ADDRESSES: {{.Values.ceramicone.swarmAddresses | quote}}

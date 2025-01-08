@@ -4,7 +4,7 @@ metadata:
   name: js-ceramic-env
   annotations:
     helm.sh/hook: pre-install,pre-upgrade
-    helm.sh/hook-weight: "005"
+    helm.sh/hook-weight: "001"
     helm.sh/hook-delete-policy: before-hook-creation
 
 data:
@@ -27,10 +27,12 @@ metadata:
 data:
   daemon-config.json: |
     {
-      "anchor": {},
+      "anchor": {
+        "auth-method": "did"
+      },
       "http-api": {
         "cors-allowed-origins": ["{{ .Values.jsceramic.corsAllowedOrigins }}"],
-        "admin-dids": []
+        "admin-dids": ["{{ .Values.secrets.did }}"]
       },
       "indexing": {},
       "ipfs": {
@@ -43,9 +45,11 @@ data:
       },
       "metrics": {},
       "network": {
-        "name": "{{ .Values.jsceramic.network }}"
+        "name": "{{ .Values.ceramicNetwork }}"
       },
-      "node": {},
+      "node": {
+        "private-seed-url": "inplace:ed25519#{{ .Values.secrets.privateKey }}"
+      },
       "state-store": {
         "mode": "fs",
         "local-directory": "{{ .Values.jsceramic.stateStorePath }}"

@@ -20,9 +20,6 @@ spec:
             - daemon
             - --config
             - /config/daemon-config.json
-          envFrom:
-            - configMapRef:
-                name: js-ceramic-env
           image: "{{ .Values.jsceramic.image.repository }}:{{ .Values.jsceramic.image.tag }}"
           imagePullPolicy: {{.Values.jsceramic.image.pullPolicy}}
           livenessProbe:
@@ -52,6 +49,15 @@ spec:
             periodSeconds: 15
             successThreshold: 1
             timeoutSeconds: 30
+          envFrom:
+            - configMapRef:
+                name: js-ceramic-env
+          env:
+            - name: CERAMIC_INDEXING_DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: ceramic-postgres-auth
+                  key: uri
           resources:
             limits:
               ephemeral-storage: 3Gi

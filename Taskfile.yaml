@@ -34,6 +34,9 @@ tasks:
             -n {{.INFRA_NAMESPACE}} --create-namespace \
             -f ./postgres/values.yaml \
             oci://registry-1.docker.io/bitnamicharts/postgresql
+  un-postgres:
+    cmds:
+      - helm uninstall -n {{.INFRA_NAMESPACE}} postgres
 
   fw-postgres:
     cmds:
@@ -47,3 +50,6 @@ tasks:
 
   un-ceramic:
     cmd: helm uninstall -n {{.INFRA_NAMESPACE}} ceramic
+
+  fw-ceramic:
+    cmd: kubectl port-forward -n {{.INFRA_NAMESPACE}} svc/js-ceramic 7007:7007
