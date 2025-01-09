@@ -12,7 +12,7 @@ data:
   CERAMIC_METRICS_EXPORTER_ENABLED: "{{ .Values.jsceramic.metrics.exporterEnabled }}"
   CERAMIC_PROMETHEUS_EXPORTER_ENABLED: "{{ .Values.jsceramic.metrics.prometheusExporterEnabled }}"
   CERAMIC_PROMETHEUS_EXPORTER_PORT: "{{ .Values.jsceramic.metrics.prometheusExporterPort }}"
-  CERAMIC_RECON_MODE: "{{ .Values.jsceramic.reconMode }}"
+  CERAMIC_RECON_MODE: "{{ .Values.reconEnabled }}"
   ETH_RPC_URL: "{{ .Values.jsceramic.ethRpcUrl }}"
 
 ---

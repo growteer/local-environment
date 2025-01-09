@@ -46,6 +46,8 @@ tasks:
     cmd: |
       helm upgrade --install ceramic \
         -n {{.INFRA_NAMESPACE}} --create-namespace \
+        -f ./ceramic/values.yaml \
+        -f ./ceramic/secrets.yaml \
         ./ceramic
 
   un-ceramic:

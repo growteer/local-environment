@@ -33,10 +33,11 @@ spec:
             successThreshold: 1
             timeoutSeconds: 30
           ports:
-            - containerPort: 7007
+            - containerPort: {{.Values.jsceramic.apiPort}}
               name: api
               protocol: TCP
-            - containerPort: 9464
+            - containerPort:
+                {{.Values.jsceramic.metrics.prometheusExporterPort}}
               name: metrics
               protocol: TCP
           readinessProbe:
@@ -52,12 +53,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: js-ceramic-env
-          env:
-            - name: CERAMIC_INDEXING_DB_URI
-              valueFrom:
-                secretKeyRef:
-                  name: ceramic-postgres-auth
-                  key: uri
           resources:
             limits:
               ephemeral-storage: 3Gi

@@ -9,11 +9,11 @@ spec:
       protocol: TCP
       targetPort: swarm-tcp
     - name: rpc
-      port: 5101
+      port: {{.Values.ceramicone.rpc.port}}
       protocol: TCP
       targetPort: rpc
     - name: metrics
-      port: 9465
+      port: {{.Values.ceramicone.metrics.port}}
       protocol: TCP
       targetPort: metrics
   selector:

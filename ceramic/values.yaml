@@ -12,10 +12,7 @@ ingress:
   enabled: false
 
 ceramicNetwork: testnet-clay
-
-db:
-  name: ceramic
-  host: postgres-postgresql.infra
+reconEnabled: "true"
 
 jsceramic:
   image:
@@ -23,17 +20,15 @@ jsceramic:
     pullPolicy: Always
     tag: "latest"
 
+  apiPort: 7007
   ipfsHost: http://ceramic-one:5101
-  disableComposeDB: false
-  indexing:
-    dbName: ceramic
+  disableComposeDB: true
 
   metrics:
     exporterEnabled: false
     prometheusExporterEnabled: true
     prometheusExporterPort: 9464
 
-  reconMode: "true"
   ethRpcUrl: ""
   stateStorePath: "/js-ceramic-data/statestore"
   corsAllowedOrigins: ".*"
@@ -45,12 +40,18 @@ ceramicone:
     pullPolicy: Always
     tag: "0.47.0"
 
-  bindAddress: 0.0.0.0:5101
+  rpc:
+    host: 0.0.0.0
+    port: 5101
+    bindAddress: 0.0.0.0:5101
+
   kademliaParallelism: 1
   kademliaReplication: 6
   localNetworkId: 0
-  metricsBindAddress: 0.0.0.0:9465
-  recon: "true"
+  metrics:
+    host: 0.0.0.0
+    port: 9465
+    bindAddress: 0.0.0.0:9465
   storeDir: /root/.ceramic-one
   swarmAddresses: /ip4/0.0.0.0/tcp/4001
   rustLog: info,ceramic_one=debug,multipart=error

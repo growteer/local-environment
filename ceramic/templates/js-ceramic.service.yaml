@@ -5,11 +5,11 @@ metadata:
 spec:
   ports:
     - name: api
-      port: 7007
+      port: {{.Values.jsceramic.apiPort}}
       protocol: TCP
       targetPort: api
     - name: metrics
-      port: 9464
+      port: {{.Values.jsceramic.metrics.prometheusExporterPort}}
       protocol: TCP
       targetPort: metrics
   selector:

@@ -24,10 +24,10 @@ spec:
             - containerPort: 4101
               name: swarm-tcp
               protocol: TCP
-            - containerPort: 5101
+            - containerPort: {{.Values.ceramicone.rpc.port}}
               name: rpc
               protocol: TCP
-            - containerPort: 9465
+            - containerPort: {{.Values.ceramicone.metrics.port}}
               name: metrics
               protocol: TCP
           livenessProbe:
