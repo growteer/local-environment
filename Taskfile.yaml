@@ -22,32 +22,18 @@ tasks:
     cmds:
       - minikube tunnel
 
-  postgres:
+  mongo:
     cmds:
       - cmd: |
-          helm upgrade --install postgres \
+          helm upgrade --install mongodb \
             -n {{.INFRA_NAMESPACE}} --create-namespace \
-            -f ./postgres/values.yaml \
-            oci://registry-1.docker.io/bitnamicharts/postgresql
+            -f ./mongodb/values.yaml \
+            oci://registry-1.docker.io/bitnamicharts/mongodb
 
-  un-postgres:
+  un-mongo:
     cmds:
-      - helm uninstall -n {{.INFRA_NAMESPACE}} postgres
+      - helm uninstall -n {{.INFRA_NAMESPACE}} mongodb
 
-  fw-postgres:
+  fw-mongo:
     cmds:
-      - kubectl port-forward -n {{.INFRA_NAMESPACE}} svc/postgres-postgresql 5432:5432
-
-  ceramic:
-    cmd: |
-      helm upgrade --install ceramic \
-        -n {{.INFRA_NAMESPACE}} --create-namespace \
-        -f ./ceramic/values.yaml \
-        -f ./ceramic/secrets.yaml \
-        ./ceramic
-
-  un-ceramic:
-    cmd: helm uninstall -n {{.INFRA_NAMESPACE}} ceramic
-
-  fw-ceramic:
-    cmd: kubectl port-forward -n {{.INFRA_NAMESPACE}} svc/js-ceramic 7007:7007
+      - kubectl port-forward -n {{.INFRA_NAMESPACE}} svc/mongodb 27017:27017
