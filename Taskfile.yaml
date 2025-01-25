@@ -3,12 +3,23 @@ version: "3"
 vars:
   K8S_VERSION: v1.30.5
   INFRA_NAMESPACE: infra
+  APP_NAMESPACE: growteer
 
 tasks:
   boot:
     cmds:
-      - minikube start --kubernetes-version {{.K8S_VERSION}}
-      - kubectx minikube
+      - cmd: minikube start --kubernetes-version {{.K8S_VERSION}}
+      - cmd: kubectx minikube
+      - cmd: kubectl create namespace {{.APP_NAMSPACE}}
+        ignore_error: true
+      - cmd: kubectl create namespace {{.INFRA_NAMESPACE}}
+        ignore_error: true
+      - task: ingress
+      - task: mongo
+
+  expose:
+    cmds:
+      - minikube tunnel
 
   ingress:
     cmds:
@@ -18,9 +29,9 @@ tasks:
             -n {{.INFRA_NAMESPACE}} --create-namespace \
             oci://ghcr.io/nginxinc/charts/nginx-ingress --version 2.0.0
 
-  expose:
+  un-ingress:
     cmds:
-      - minikube tunnel
+      - helm uninstall -n {{.INFRA_NAMESPACE}} ingress-nginx
 
   mongo:
     cmds:
